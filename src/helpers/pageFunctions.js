@@ -1,4 +1,4 @@
-import { searchCities } from './weatherAPI';
+import { getWeatherByCity, searchCities } from './weatherAPI';
 
 /**
  * Cria um elemento HTML com as informações passadas
@@ -110,12 +110,35 @@ export function createCityElement(cityInfo) {
 /**
  * Lida com o evento de submit do formulário de busca
  */
-export function handleSearch(event) {
+export async function handleSearch(event) {
   event.preventDefault();
   clearChildrenById('cities');
 
   const searchInput = document.getElementById('search-input');
   const searchValue = searchInput.value;
-  searchCities(searchValue);
-  // seu código aqui
+  try {
+    const dataCities = await searchCities(searchValue);
+    if (dataCities.length === 0) {
+      window.alert('Nenhuma cidade encontrada');
+      return;
+    }
+    // const teste = await getWeatherByCity(dataCities[0].url);
+    // console.log(teste);
+    const promises = dataCities.map((city) => getWeatherByCity(city.url));
+    const weatherData = await Promise.all(promises);
+    const cityInfos = dataCities.map((city, index) => {
+      const cityData = {
+        name: city.name,
+        country: city.country,
+        temp: weatherData[index].temp_c,
+        condition: weatherData[index].condition.text,
+        icon: weatherData[index].condition.icon,
+      };
+      return createCityElement(cityData);
+    });
+    const citiesList = document.getElementById('cities');
+    cityInfos.forEach((city) => citiesList.appendChild(city));
+  } catch (error) {
+    console.error('Erro ao buscar informações:', error);
+  }
 }

@@ -10,6 +10,15 @@ export const searchCities = async (citie) => {
   return data;
 };
 
-export const getWeatherByCity = (/* cityURL */) => {
-//   seu código aqui
+export const getWeatherByCity = async (url) => {
+  const citiesURL = `http://api.weatherapi.com/v1/current.json?lang=pt&key=${token}&q=${url}`;
+  try {
+    const response = await fetch(citiesURL);
+    const data = await response.json();
+    const weather = data.current;
+    return weather;
+  } catch (error) {
+    console.log('Erro ao buscar clima:', error);
+    throw error;
+  }
 };
