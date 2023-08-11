@@ -81,7 +81,7 @@ export function createCityElement(cityInfo) {
 
   const cityElement = createElement('li', 'city');
 
-  const forecastBtn = createElement('button', 'seven-days-forecast', 'Previsão 7 dias');
+  const forecastBtn = createElement('button', 'seven-days-forecast', 'Previsão 3 dias');
   forecastBtn.addEventListener('click', async () => {
     const forecastInfo = await sevenDaysForecast(url);
     showForecast(forecastInfo);
