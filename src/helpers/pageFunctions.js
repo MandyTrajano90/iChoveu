@@ -1,4 +1,4 @@
-import { getWeatherByCity, searchCities } from './weatherAPI';
+import { getWeatherByCity, searchCities, sevenDaysForecast } from './weatherAPI';
 
 /**
  * Cria um elemento HTML com as informações passadas
@@ -77,15 +77,22 @@ export function showForecast(forecastList) {
  * Recebe um objeto com as informações de uma cidade e retorna um elemento HTML
  */
 export function createCityElement(cityInfo) {
-  const { name, country, temp, condition, icon /* , url */ } = cityInfo;
+  const { name, country, temp, condition, icon, url } = cityInfo;
 
   const cityElement = createElement('li', 'city');
+
+  const forecastBtn = createElement('button', 'seven-days-forecast', 'Previsão 7 dias');
+  forecastBtn.addEventListener('click', async () => {
+    const forecastInfo = await sevenDaysForecast(url);
+    showForecast(forecastInfo);
+  });
 
   const headingElement = createElement('div', 'city-heading');
   const nameElement = createElement('h2', 'city-name', name);
   const countryElement = createElement('p', 'city-country', country);
   headingElement.appendChild(nameElement);
   headingElement.appendChild(countryElement);
+  headingElement.appendChild(forecastBtn);
 
   const tempElement = createElement('p', 'city-temp', `${temp}º`);
   const conditionElement = createElement('p', 'city-condition', condition);
@@ -133,6 +140,7 @@ export async function handleSearch(event) {
         temp: weatherData[index].temp_c,
         condition: weatherData[index].condition.text,
         icon: weatherData[index].condition.icon,
+        url: city.url,
       };
       return createCityElement(cityData);
     });

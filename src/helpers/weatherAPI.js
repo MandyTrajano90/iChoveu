@@ -22,3 +22,18 @@ export const getWeatherByCity = async (url) => {
     throw error;
   }
 };
+
+export const sevenDaysForecast = async (url) => {
+  const nextDaysAPI = `http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${token}&q=${url}&days=7`;
+
+  const response = await fetch(nextDaysAPI);
+  const data = await response.json();
+  const { forecast } = data;
+  const { forecastday } = forecast;
+  return forecastday.map((day) => {
+    const { date, day: dayForTemp } = day;
+    const { maxtemp_c: maxTemp, mintemp_c: minTemp, condition: conditionD } = dayForTemp;
+    const { text: condition, icon } = conditionD;
+    return { date, maxTemp, minTemp, condition, icon };
+  });
+};
