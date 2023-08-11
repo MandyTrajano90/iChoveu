@@ -24,7 +24,8 @@ export const getWeatherByCity = async (url) => {
 };
 
 export const sevenDaysForecast = async (url) => {
-  const nextDaysAPI = `http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${token}&q=${url}&days=3`;
+  const days = 7;
+  const nextDaysAPI = `http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${token}&q=${url}&days=${days}`;
 
   const response = await fetch(nextDaysAPI);
   const data = await response.json();
